@@ -36,6 +36,7 @@ src/
   index.css
   hooks/useReveal.ts      <- scroll-reveal (IntersectionObserver)
   components/
+    DotBackground.tsx     <- interactive cursor-repel dot grid (full-page canvas)
     Nav.tsx
     Hero.tsx
     Terminal.tsx          <- interactive ~/ask-me.sh widget

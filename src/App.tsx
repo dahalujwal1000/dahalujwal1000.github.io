@@ -1,3 +1,4 @@
+import DotBackground from "./components/DotBackground";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import Projects from "./components/Projects";
@@ -10,6 +11,7 @@ export default function App() {
 
   return (
     <>
+      <DotBackground />
       <Nav />
       <main id="top">
         <Hero />

@@ -80,6 +80,22 @@ h3 {
   color: var(--green);
 }
 
+/* ---------- interactive dot background ---------- */
+#root {
+  position: relative;
+  z-index: 1; /* stacking context: keeps the fixed canvas behind all content */
+}
+
+.dot-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  display: block;
+}
+
 /* ---------- blinking caret + status dot ---------- */
 .caret {
   display: inline-block;

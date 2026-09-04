@@ -4,7 +4,7 @@ import { useEffect } from "react";
  * Scroll-reveal: every element with `data-reveal` fades in the first
  * time it enters the viewport. Respects prefers-reduced-motion via CSS.
  */
-export default function useReveal() {
+export default function useReveal(dep?: unknown) {
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if (els.length === 0) return;
@@ -28,5 +28,5 @@ export default function useReveal() {
 
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [dep]);
 }

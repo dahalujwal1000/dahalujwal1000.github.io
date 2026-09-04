@@ -1,23 +1,21 @@
 import DotBackground from "./components/DotBackground";
 import Nav from "./components/Nav";
-import Hero from "./components/Hero";
-import Projects from "./components/Projects";
-import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
 import useReveal from "./hooks/useReveal";
+import useHashRoute from "./hooks/useHashRoute";
 
 export default function App() {
-  useReveal();
+  const route = useHashRoute();
+  // re-run the reveal observer whenever the page changes
+  useReveal(route);
 
   return (
     <>
       <DotBackground />
       <Nav />
-      <main id="top">
-        <Hero />
-        <Projects />
-        <Contact />
-      </main>
+      <main>{route === "home" ? <HomePage /> : <AboutPage />}</main>
       <Footer />
     </>
   );

@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "sync": "node scripts/sync-github.mjs",
+    "prebuild": "npm run sync",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },

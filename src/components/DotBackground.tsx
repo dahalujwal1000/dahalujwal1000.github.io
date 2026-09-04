@@ -1,154 +1,81 @@
 import { useEffect, useRef } from "react";
 
-type Dot = {
-  ox: number;
-  oy: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-};
-
-const SPACING = 28;
-const DOT_RADIUS = 1.6;
-const DOT_COLOR = "139, 148, 158"; // matches --fg-dim (#8b949e)
-const DOT_ALPHA = 0.45;
-const TOUCH_RADIUS = 150;
-const PUSH_FORCE = 3.2;
-const SPRING = 0.06;
-const DAMPING = 0.84;
-const SMOOTH = 0.12; // cursor smoothing / trailing
+/* ---------- tuning knobs (live in index.css as custom properties) ----------
+   --dot-base      dim dot color        (akkila.dev: #ffffff14 — white @ 8%)
+   --grid-line     cell line color      (akkila.dev: #ffffff06 — white @ 2.4%)
+   --dot-bright    revealed dot color   (akkila.dev: #00ff88; we use --green)
+   --torch-radius  mask radius          (akkila.dev: 220px; visible reach = 75%)
+--------------------------------------------------------------------------- */
 
 /**
- * Full-page interactive dot grid: dots get pushed away from the pointer
- * (smoothed) and spring back to their grid position. Fixed behind all
- * content, pointer-events none. Reduced-motion users get a static grid.
+ * "Flashlight" dot grid modeled on akkila.dev, using the same architecture as
+ * the reference: stacked fixed layers — a faint 96px cell grid, dim 24px base
+ * dots, and a layer of bright green dots revealed near the pointer by a
+ * radial mask-image. A rAF loop lerps the mask center toward the cursor
+ * (0.18/frame in the reference, normalized to frame rate here) and parks it
+ * offscreen on pointer leave, so the light glides away like on the reference.
+ * Pure CSS painting (GPU-composited), no per-frame canvas drawing; resize is
+ * handled by CSS itself. Reduced-motion users get the static grid only.
  */
 export default function DotBackground() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    let width = 0;
-    let height = 0;
-    let dots: Dot[] = [];
-    const pointer = { tx: -9999, ty: -9999, x: -9999, y: -9999 };
+    const LERP = 0.18; // per-frame follow factor used by the reference
+    let tx = window.innerWidth / 2;
+    let ty = window.innerHeight / 2;
+    let x = tx;
+    let y = ty;
     let raf = 0;
+    let last = 0;
 
-    const build = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas.getBoundingClientRect();
-      width = Math.max(1, Math.floor(rect.width));
-      height = Math.max(1, Math.floor(rect.height));
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const cols = Math.ceil(width / SPACING);
-      const rows = Math.ceil(height / SPACING);
-      const next: Dot[] = [];
-      for (let r = 0; r <= rows; r++) {
-        const shift = r % 2 === 1 ? SPACING / 2 : 0; // staggered grid
-        for (let c = 0; c <= cols; c++) {
-          const ox = c * SPACING + shift;
-          const oy = r * SPACING;
-          next.push({ ox, oy, x: ox, y: oy, vx: 0, vy: 0 });
-        }
-      }
-      dots = next;
+    const onMove = (e: PointerEvent) => {
+      tx = e.clientX;
+      ty = e.clientY;
     };
-
-    const onPointerMove = (e: PointerEvent) => {
-      pointer.tx = e.clientX;
-      pointer.ty = e.clientY;
+    // park the target offscreen; the light glides away, like the reference
+    const onLeave = () => {
+      tx = -9999;
+      ty = -9999;
     };
-
-    const onPointerLeave = () => {
-      pointer.tx = -9999;
-      pointer.ty = -9999;
-    };
-
-    const draw = () => {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, width, height);
-
-      // smooth trailing cursor
-      pointer.x += (pointer.tx - pointer.x) * SMOOTH;
-      pointer.y += (pointer.ty - pointer.y) * SMOOTH;
-
-      const px = pointer.x;
-      const py = pointer.y;
-      ctx.fillStyle = `rgba(${DOT_COLOR}, ${DOT_ALPHA})`;
-
-      for (const d of dots) {
-        const dx = d.x - px;
-        const dy = d.y - py;
-        const dist2 = dx * dx + dy * dy;
-
-        // push away from the pointer
-        if (dist2 > 0.0001 && dist2 < TOUCH_RADIUS * TOUCH_RADIUS) {
-          const dist = Math.sqrt(dist2);
-          const force = (1 - dist / TOUCH_RADIUS) * PUSH_FORCE;
-          d.vx += (dx / dist) * force;
-          d.vy += (dy / dist) * force;
-        }
-
-        // spring back toward origin
-        d.vx += (d.ox - d.x) * SPRING;
-        d.vy += (d.oy - d.y) * SPRING;
-
-        // damping + integrate
-        d.vx *= DAMPING;
-        d.vy *= DAMPING;
-        d.x += d.vx;
-        d.y += d.vy;
-
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, DOT_RADIUS, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    };
-
-    const loop = () => {
-      draw();
+    const loop = (now: number) => {
+      const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+      last = now;
+      const k = 1 - Math.pow(1 - LERP, dt * 60); // frame-rate independent
+      x += (tx - x) * k;
+      y += (ty - y) * k;
+      el.style.setProperty("--mx", `${x.toFixed(1)}px`);
+      el.style.setProperty("--my", `${y.toFixed(1)}px`);
       raf = requestAnimationFrame(loop);
     };
 
-    build();
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    document.addEventListener("mouseleave", onPointerLeave);
-    window.addEventListener("blur", onPointerLeave);
-    window.addEventListener("resize", build);
-
-    if (reduceMotion) {
-      draw(); // static frame, no interaction, no loop
-    } else {
-      raf = requestAnimationFrame(loop);
-    }
-
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("mouseleave", onLeave);
+    window.addEventListener("blur", onLeave);
+    raf = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("pointermove", onPointerMove);
-      document.removeEventListener("mouseleave", onPointerLeave);
-      window.removeEventListener("blur", onPointerLeave);
-      window.removeEventListener("resize", build);
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("blur", onLeave);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
+    <div
+      ref={ref}
       className="dot-background"
       role="presentation"
       aria-hidden="true"
-    />
+    >
+      <div className="bg-grid" />
+      <div className="bg-dots-base" />
+      <div className="bg-dots-torch" />
+      <div className="bg-vignette" />
+    </div>
   );
 }

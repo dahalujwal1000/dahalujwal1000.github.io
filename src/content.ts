@@ -253,7 +253,7 @@ export function timeAgo(iso?: string): string {
 
 export function statsLine(p: Project): string {
   return [
-    p.stars != null ? `★ ${p.stars}` : "",
+    p.stars != null && p.stars > 0 ? `★ ${p.stars}` : "",
     p.language || "",
     p.updatedAt ? `updated ${timeAgo(p.updatedAt)}` : "",
   ]

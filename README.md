@@ -1,6 +1,6 @@
 # My Portfolio
 
-> Portfolio site — dark terminal/CLI aesthetic, inspired by [akkila.dev](https://akkila.dev/#top).
+
 
 ## Stack
 

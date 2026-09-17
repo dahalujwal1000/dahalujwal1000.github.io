@@ -16,6 +16,83 @@ export type GithubRepo = {
 
 export const githubRepos: GithubRepo[] = [
   {
+    "name": "dahalujwal1000.github.io",
+    "description": "",
+    "topics": [],
+    "language": "",
+    "stars": 0,
+    "pushedAt": "2026-09-17T12:01:05Z",
+    "url": "https://github.com/dahalujwal1000/dahalujwal1000.github.io",
+    "homepage": "",
+    "readMe": ""
+  },
+  {
+    "name": "Digital_well-being",
+    "description": "",
+    "topics": [],
+    "language": "Python",
+    "stars": 0,
+    "pushedAt": "2026-09-15T22:53:15Z",
+    "url": "https://github.com/dahalujwal1000/Digital_well-being",
+    "homepage": "",
+    "readMe": "Digital Wellbeing for Windows (v1.2)\nA Digital-Wellbeing-style single Windows app:\ntoday's Active screen time, Laptop open time, Idle time, Unlocks,\nhourly activity chart, top apps/websites, laptop sessions timeline —\ntracked by a background engine that lives in the system tray, viewed in a\npolished dashboard with animated ring, hover tooltips, click-to-jump week\nchart and pull-to-refresh. Restart-proof by design.\nv1 scope: tracking + storage + dashboard UI. NO blocking / task-kill.\nStack\nPython 3.11+ · CustomTkinter · SQLite · Win32 API via ctypes · PyInstaller\nRun from source (dev)\npowershell\n1. Install Python 3.11+ (winget install Python.Python.3.12) if needed\n2. From this folder:\npip install -r requirements.txt\npython runapp.py # tracker + tray (normal use)\npython runapp.py --dashboard # dashboard window\npython smoketest.py # opens the UI, auto-closes\nThe ONE executable\nThe whole product ships as a single exe:\n Command What it does \n------\n DigitalWellbeing.exe tracker + system tray (normal use / autostart) \n DigitalWellbeing.exe --dashboard open the dashboard window \n DigitalWellbeing.exe --no-tray headless tracker (testing) \nTray menu: Open Dashboard · Today's active time · …"
+  },
+  {
+    "name": "Research_Agent",
+    "description": "",
+    "topics": [],
+    "language": "Python",
+    "stars": 0,
+    "pushedAt": "2026-09-09T18:45:21Z",
+    "url": "https://github.com/dahalujwal1000/Research_Agent",
+    "homepage": "",
+    "readMe": "ResearchAgent\nAI Research Agent — topic in, structured markdown report out.\nPipeline\nTopic → LLM generates 3 queries → Tavily search (5 URLs each)\n→ requests + trafilatura crawl → per-source LLM summary → final report\nSetup\npowershell\npip install -r requirements.txt\ncopy .env.example .env # then fill OPENROUTERAPIKEY + TAVILYAPIKEY\nUsage\npowershell\npython main.py \"benefits of drinking green tea\"\nreport saved to reports/ - .md\nGlobal install (call from anywhere)\npowershell\npip install -e .\nresearch-agent \"benefits of drinking green tea\"\nThis creates a research-agent command on PATH. Reports still save to the\nproject's reports/ folder, and API keys are always read from the project's\n.env no matter which folder you run from.\nFiles\n- main.py — CLI (thin, imports agent.run so API/UI can reuse later)\n- agent.py — orchestrator\n- config.py — env keys + tunables\n- search.py — Tavily client\n- crawler.py — requests + trafilatura\n- llm.py — OpenRouter client with per-stage free models:\n - queries → nvidia/nemotron-3-ultra-550b-a55b:free (reasoning)\n - summaries → google/gemma-4-31b-it:free (fast extraction)\n - report → thinkingmachines/inkling:free (long-form writing)\n - poolside …"
+  },
+  {
+    "name": "QAgent",
+    "description": "",
+    "topics": [],
+    "language": "Python",
+    "stars": 0,
+    "pushedAt": "2026-09-09T16:38:58Z",
+    "url": "https://github.com/dahalujwal1000/QAgent",
+    "homepage": "",
+    "readMe": "AI Security & QA Agent\nScans a codebase or website for security vulnerabilities, vulnerable\ndependencies, broken links, and failing tests — then ranks everything by\nseverity and explains it in plain English.\nCore principle: the LLM orchestrates, it never scans. Every check is a real\nexternal tool run via subprocess; the LLM (via OpenRouter) decides which tools\nto run, reads the raw output, dedupes false positives, and writes the report.\nWhat it checks\n Check Tool (wrapped, not reinvented) \n------\n Security issues (secrets, SQLi, XSS, shell=True, weak hashing) bandit \n Vulnerable dependencies pip-audit (Python) / npm audit (Node) \n Broken links (404 / 5xx / timeouts / redirects) built-in crawler (requests) \n Test suite pass/fail pytest (junit-xml) / npm test \nSetup\nbash\npip install -r requirements.txt\npip install bandit pip-audit # scanner CLIs\ncopy .env.example .env # then add your OpenRouter key\n.env:\nOPENROUTERAPIKEY=sk-or-...\nOPENROUTERMODEL=deepseek/deepseek-chat # any OpenRouter model\nUsage\nbash\npython cli.py path/to/repo # local project\npython cli.py https://github.com/u/r.git # remote repo (cloned to temp)\npython cli.py https://example.com # website (link crawl)\npython …"
+  },
+  {
+    "name": "My_Portfolio",
+    "description": "",
+    "topics": [],
+    "language": "TypeScript",
+    "stars": 0,
+    "pushedAt": "2026-09-09T16:20:29Z",
+    "url": "https://github.com/dahalujwal1000/My_Portfolio",
+    "homepage": "",
+    "readMe": "My Portfolio\nStack\n- React 18 + TypeScript + Vite\n- Plain CSS (CSS custom properties) — no UI framework\n- Google Fonts → JetBrains Mono\n- Deploy target: Vercel (static, free)\nQuick start\nbash\nnpm install\nnpm run dev # local dev → http://localhost:5173\nnpm run sync # refresh GitHub data into src/github.gen.ts\nnpm run build # sync + type-check + production build (dist/)\nnpm run preview # preview the production build\nCustomize\nAll site content (name, links, projects, terminal answers) lives in a single file:\nsrc/content.ts <- edit everything here\nProjects & the chatbot are fed from GitHub automatically. npm run sync\n(also runs before every build) harvests your public repos — description,\ntopics, language, stars, README digest — into src/github.gen.ts. Anything\nfound there shows up on the site and becomes chatbot knowledge. Hand-listed\nprojects in content.ts can claim a repo via repo: \"owner/name\" (stats +\nREADME flow in, no double-listing), hide unwanted repos via github.hide,\nand rewrite anything the machine got wrong — your words always win.\nProject structure\nsrc/\n content.ts <- edit everything here\n github.gen.ts <- GENERATED from GitHub (npm run sync)\n App.tsx <- hash router (#/ …"
+  },
+  {
+    "name": "StudyMate-AI-Platform",
+    "description": "AI academic assistant. Student uploads notes/syllabus/PDFs, tool answers questions, quizzes them, tracks progress, maybe schedules study. Core loop: ingest content → understand → help student (Q&A, summarize, quiz, plan).",
+    "topics": [],
+    "language": "Python",
+    "stars": 0,
+    "pushedAt": "2026-09-06T09:31:09Z",
+    "url": "https://github.com/dahalujwal1000/StudyMate-AI-Platform",
+    "homepage": "",
+    "readMe": "StudyMate AI 🎓\nAI academic assistant for your final year project: upload notes/syllabus/PDFs, get\nsummaries, ask grounded questions with citations, generate quizzes & flashcards,\nplan study tasks and track progress.\nCore loop\nIngest → Understand → Practice → Improve\n Feature How it works \n------\n 📄 Doc upload + summary PDF / PPTX / DOCX / TXT / MD parsed, chunked, summarized (Gemini free tier, or extractive fallback) \n 💬 RAG chatbot TF-IDF retrieval over document chunks → LLM answers with [n] citations, or grounded excerpt fallback \n 🧠 Quiz & flashcards LLM-generated MCQs + flip flashcards, score tracking per attempt \n 🗓️ Study planner Tasks with course, due date, type; todo/done toggle \n 📈 Progress dashboard Topic mastery bars, weak-topic highlight, score history chart \nTech stack\n- Backend: FastAPI + Jinja2 templates + Tailwind (CDN) — design tokens ported 1:1 from the Stitch design system\n- DB: SQLite via SQLAlchemy (swap to Postgres via DATABASEURL)\n- LLM: Gemini, Mistral, or Groq (free tiers) with automatic fallback — set the primary via LLMPROVIDER; any other provider with a key becomes a backup\n- Retrieval: in-memory TF-IDF index (stdlib) — swap for Chroma/FAISS …"
+  },
+  {
+    "name": "URL_Shortner",
+    "description": "",
+    "topics": [],
+    "language": "JavaScript",
+    "stars": 1,
+    "pushedAt": "2026-09-05T18:51:33Z",
+    "url": "https://github.com/dahalujwal1000/URL_Shortner",
+    "homepage": "",
+    "readMe": "🔗 URL Shortener\nA full-stack URL shortener with a Node.js/Express + SQLite backend and a React (Vite + Tailwind CSS) frontend. Shorten long URLs, use custom aliases, set expiry dates, and track real-time click analytics.\n✨ Features\n- Shorten URLs — instantly generate compact short codes (Base62)\n- Custom aliases — optional user-defined short codes (3–20 alphanumeric chars)\n- Link expiration — optional expiry date per link\n- Click analytics — total clicks, referrers, user agents, and recent click activity\n- Rate limiting — 100 requests / 15 min per IP\n- Input validation — strict URL validation with the validator library\n🏗️ Tech Stack\n Layer Technology \n -------- --------------------------------------- \n Backend Node.js, Express, SQLite (sqlite3) \n Frontend React 19, Vite, Tailwind CSS, React Router \n Testing Jest + Supertest \n DevOps Docker + docker-compose, nginx \n📁 Project Structure\nURL-Shortner/\n├── backend/\n│ ├── server.js # Express entry point\n│ ├── config/database.js # SQLite connection + schema\n│ ├── controllers/ # Request handlers\n│ ├── routes/ # API + redirect routes\n│ ├── models/ # DB queries\n│ ├── services/ # Short-code generation\n│ ├── middleware/ # URL validation\n│ …"
+  },
+  {
     "name": "norvic-hospital",
     "description": "a hospital website with full froentend and backend",
     "topics": [],
@@ -47,17 +124,6 @@ export const githubRepos: GithubRepo[] = [
     "url": "https://github.com/dahalujwal1000/Project_zero_delay",
     "homepage": "",
     "readMe": "Nepal Gamer Voice Chat\nA lightweight, low-latency voice chat application designed specifically for Nepal gamers to beat Discord in performance and accessibility.\n🔄 Recent Updates\n- Server port auto-discovery. The signaling server scans upward from its preferred port (default 3000) and writes the chosen port to server/.resolved-port. The frontend calls GET /port to learn which port to connect to. No more EADDRINUSE crashes when another process is squatting on the default.\n- Static frontend dev server. npm run frontend (or npm run dev) serves src/ on port 5173 (or the next free port). The Tauri wrapper is still supported but no longer required for local development.\n- Authentication flow. registerEmail accepts a username and writes a users/{uid} doc to Firestore. The UI reads it back so the bottom-bar username is the chosen name, not an email prefix.\n- Icon set. Replaced the Font Awesome kit placeholder (which was 403ing) with inline SVG icons for mic / headphones / cog / close.\n- Loading overlay. Clears as soon as app.js parses, so Firebase init errors don't strand the user on a spinner.\n🎯 Features\n- Ultra-low latency voice chat ( /port → {\"port\": }\nGET http://localhost: /health …"
-  },
-  {
-    "name": "My_Portfolio",
-    "description": "",
-    "topics": [],
-    "language": "TypeScript",
-    "stars": 0,
-    "pushedAt": "2026-08-31T17:42:37Z",
-    "url": "https://github.com/dahalujwal1000/My_Portfolio",
-    "homepage": "",
-    "readMe": "My Portfolio\n Portfolio site — dark terminal/CLI aesthetic, inspired by akkila.dev.\nStack\n- React 18 + TypeScript + Vite\n- Plain CSS (CSS custom properties) — no UI framework\n- Google Fonts → JetBrains Mono\n- Deploy target: Vercel (static, free)\nQuick start\nbash\nnpm install\nnpm run dev # local dev → http://localhost:5173\nnpm run build # type-check + production build (dist/)\nnpm run preview # preview the production build\nCustomize\nAll site content (name, links, projects, terminal answers) lives in a single file:\nsrc/content.ts <- edit everything here\nProject structure\nsrc/\n content.ts <- edit everything here\n App.tsx\n main.tsx\n index.css\n hooks/useReveal.ts <- scroll-reveal (IntersectionObserver)\n components/\n DotBackground.tsx <- interactive cursor-repel dot grid (full-page canvas)\n Nav.tsx\n Hero.tsx\n Terminal.tsx <- interactive /ask-me.sh widget\n Projects.tsx\n Contact.tsx\n Footer.tsx\nRoadmap\n- [ ] Replace placeholder projects with real work\n- [ ] Wire the contact form to a backend (Formspree / Resend)\n- [ ] Optional 3D hero object (Three.js / React Three Fiber)"
   },
   {
     "name": "-nepal-gamer-voice_ZERO_DELAY",
@@ -102,17 +168,6 @@ export const githubRepos: GithubRepo[] = [
     "url": "https://github.com/dahalujwal1000/portfolio",
     "homepage": "",
     "readMe": "React + Vite\nThis template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.\nCurrently, two official plugins are available:\n- @vitejs/plugin-react uses Oxc\n- @vitejs/plugin-react-swc uses SWC\nReact Compiler\nThe React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see this documentation.\nExpanding the Oxlint configuration\nIf you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the TS template for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project."
-  },
-  {
-    "name": "URL_Shortner",
-    "description": "",
-    "topics": [],
-    "language": "Python",
-    "stars": 1,
-    "pushedAt": "2026-07-20T12:07:01Z",
-    "url": "https://github.com/dahalujwal1000/URL_Shortner",
-    "homepage": "",
-    "readMe": ""
   },
   {
     "name": "dahalujwal1000",
@@ -168,18 +223,7 @@ export const githubRepos: GithubRepo[] = [
     "url": "https://github.com/dahalujwal1000/new_practice",
     "homepage": "",
     "readMe": "just a test page"
-  },
-  {
-    "name": "Practice-06-11",
-    "description": "",
-    "topics": [],
-    "language": "HTML",
-    "stars": 0,
-    "pushedAt": "2026-07-11T17:07:11Z",
-    "url": "https://github.com/dahalujwal1000/Practice-06-11",
-    "homepage": "",
-    "readMe": "this is trial website created with free ai tools."
   }
 ];
 
-export const githubSyncedAt = "2026-09-04T12:53:43.133Z";
+export const githubSyncedAt = "2026-09-17T12:02:26.244Z";

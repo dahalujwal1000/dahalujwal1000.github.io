@@ -16,26 +16,49 @@ export type GithubRepo = {
 
 export const githubRepos: GithubRepo[] = [
   {
-    "name": "dahalujwal1000.github.io",
+    "name": "four_season_guest_house",
     "description": "",
     "topics": [],
-    "language": "",
+    "language": "JavaScript",
     "stars": 0,
-    "pushedAt": "2026-09-17T12:01:05Z",
-    "url": "https://github.com/dahalujwal1000/dahalujwal1000.github.io",
+    "pushedAt": "2026-09-18T12:13:28Z",
+    "url": "https://github.com/dahalujwal1000/four_season_guest_house",
     "homepage": "",
-    "readMe": ""
+    "readMe": "Four Season Guest House & Restaurant — Chame, Annapurna Circuit\nComplete booking website for the guest house: public site, booking engine with\nlive availability, and an admin panel. Zero dependencies, zero cost to run.\nRun it\nbash\nnpm start\nOpen http://localhost:4173\nOn first start the server creates data/fourseason.db (SQLite) and seeds it\nwith the 10 rooms, the restaurant menu, rooms/facilities/gallery content and a\nsample review. To start over, stop the server and delete the data folder.\nTest it\nbash\nnpm test\nRuns the full smoke test (87 checks) against a temporary server and database:\nsite pages, API, booking flow, availability calendar, admin auth + every admin\nendpoint. It cleans up after itself and never touches data/.\nWhat's inside\n Path What it is \n------\n public/ All pages: index, rooms, restaurant, gallery, guide, booking, contact, admin \n public/assets/js/app.js Frontend logic for the public site \n public/assets/js/admin.js Frontend logic for the admin panel \n public/assets/css/styles.css Design system (modern minimal, white, premium) \n public/images/ Downloaded sample photos (replace with real lodge photos) \n src/server.js Static file server + API routing + .env …"
   },
   {
     "name": "Digital_well-being",
-    "description": "",
-    "topics": [],
+    "description": "Digital Wellbeing for Windows — open-source PC screen-time tracker, app usage monitor, focus timer, distraction blocker, and productivity dashboard.",
+    "topics": [
+      "digital-wellbeing",
+      "digital-wellbeing-",
+      "digital-wellbeing-app",
+      "digital-wellbeing-desktop",
+      "open-source",
+      "open-source-project",
+      "open-sources-code-github",
+      "productivity-app",
+      "productivity-app-2026",
+      "screen-time-tracker",
+      "usage-tracker"
+    ],
     "language": "Python",
     "stars": 0,
-    "pushedAt": "2026-09-15T22:53:15Z",
+    "pushedAt": "2026-09-17T14:42:31Z",
     "url": "https://github.com/dahalujwal1000/Digital_well-being",
     "homepage": "",
-    "readMe": "Digital Wellbeing for Windows (v1.2)\nA Digital-Wellbeing-style single Windows app:\ntoday's Active screen time, Laptop open time, Idle time, Unlocks,\nhourly activity chart, top apps/websites, laptop sessions timeline —\ntracked by a background engine that lives in the system tray, viewed in a\npolished dashboard with animated ring, hover tooltips, click-to-jump week\nchart and pull-to-refresh. Restart-proof by design.\nv1 scope: tracking + storage + dashboard UI. NO blocking / task-kill.\nStack\nPython 3.11+ · CustomTkinter · SQLite · Win32 API via ctypes · PyInstaller\nRun from source (dev)\npowershell\n1. Install Python 3.11+ (winget install Python.Python.3.12) if needed\n2. From this folder:\npip install -r requirements.txt\npython runapp.py # tracker + tray (normal use)\npython runapp.py --dashboard # dashboard window\npython smoketest.py # opens the UI, auto-closes\nThe ONE executable\nThe whole product ships as a single exe:\n Command What it does \n------\n DigitalWellbeing.exe tracker + system tray (normal use / autostart) \n DigitalWellbeing.exe --dashboard open the dashboard window \n DigitalWellbeing.exe --no-tray headless tracker (testing) \nTray menu: Open Dashboard · Today's active time · …"
+    "readMe": "Digital Wellbeing for Windows (v1.3)\nA Digital-Wellbeing-style single Windows app:\ntoday's Active screen time, Laptop open time, Idle time, Unlocks,\nhourly activity chart, top apps/websites, laptop sessions timeline —\ntracked by a background engine that lives in the system tray, viewed in a\npolished dashboard with animated ring, hover tooltips, click-to-jump week\nchart and pull-to-refresh. Restart-proof by design.\nv1 scope: tracking + storage + dashboard UI. NO blocking / task-kill.\nStack\nPython 3.11+ · CustomTkinter · SQLite · Win32 API via ctypes · PyInstaller\nRun from source (dev)\npowershell\n1. Install Python 3.11+ (winget install Python.Python.3.12) if needed\n2. From this folder:\npip install -r requirements.txt\npython runapp.py # tracker + tray (normal use)\npython runapp.py --dashboard # dashboard window\npython smoketest.py # opens the UI, auto-closes\nThe ONE executable\nThe whole product ships as a single exe:\n Command What it does \n------\n DigitalWellbeing.exe tracker + system tray (normal use / autostart) \n DigitalWellbeing.exe --dashboard open the dashboard window \n DigitalWellbeing.exe --no-tray headless tracker (testing) \n DigitalWellbeing.exe --autostart-status show the …"
+  },
+  {
+    "name": "dahalujwal1000.github.io",
+    "description": "",
+    "topics": [],
+    "language": "TypeScript",
+    "stars": 0,
+    "pushedAt": "2026-09-17T12:04:51Z",
+    "url": "https://github.com/dahalujwal1000/dahalujwal1000.github.io",
+    "homepage": "",
+    "readMe": "My Portfolio\nStack\n- React 18 + TypeScript + Vite\n- Plain CSS (CSS custom properties) — no UI framework\n- Google Fonts → JetBrains Mono\n- Deploy target: Vercel (static, free)\nQuick start\nbash\nnpm install\nnpm run dev # local dev → http://localhost:5173\nnpm run sync # refresh GitHub data into src/github.gen.ts\nnpm run build # sync + type-check + production build (dist/)\nnpm run preview # preview the production build\nCustomize\nAll site content (name, links, projects, terminal answers) lives in a single file:\nsrc/content.ts <- edit everything here\nProjects & the chatbot are fed from GitHub automatically. npm run sync\n(also runs before every build) harvests your public repos — description,\ntopics, language, stars, README digest — into src/github.gen.ts. Anything\nfound there shows up on the site and becomes chatbot knowledge. Hand-listed\nprojects in content.ts can claim a repo via repo: \"owner/name\" (stats +\nREADME flow in, no double-listing), hide unwanted repos via github.hide,\nand rewrite anything the machine got wrong — your words always win.\nProject structure\nsrc/\n content.ts <- edit everything here\n github.gen.ts <- GENERATED from GitHub (npm run sync)\n App.tsx <- hash router (#/ …"
   },
   {
     "name": "Research_Agent",
@@ -226,4 +249,4 @@ export const githubRepos: GithubRepo[] = [
   }
 ];
 
-export const githubSyncedAt = "2026-09-17T12:02:26.244Z";
+export const githubSyncedAt = "2026-09-18T12:33:52.568Z";

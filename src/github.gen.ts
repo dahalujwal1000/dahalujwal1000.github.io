@@ -16,15 +16,26 @@ export type GithubRepo = {
 
 export const githubRepos: GithubRepo[] = [
   {
+    "name": "dahalujwal1000.github.io",
+    "description": "",
+    "topics": [],
+    "language": "TypeScript",
+    "stars": 0,
+    "pushedAt": "2026-09-18T13:33:00Z",
+    "url": "https://github.com/dahalujwal1000/dahalujwal1000.github.io",
+    "homepage": "",
+    "readMe": "Ujwal's portfolio\nReact + TypeScript portfolio with a terminal-style interface, six curated projects, a local project Q&A widget, and a Web3Forms contact form.\nDevelopment\nUse Node 20.19+ or 22.12+ (Node 24 works).\n npm ci\n npm run dev\n npm run check\n npm run build\n npm run preview\n npm audit\nBuild refreshes public GitHub metadata, checks TypeScript, and writes static files to dist/. A failed metadata fetch preserves the existing snapshot. Build does not publish anything. Deployment and custom-domain changes are on hold.\nContent\n- src/content.ts: identity, About copy, projects, and local Q&A answers.\n- selectedProjects: explicit six-project selection, grounded in repository descriptions/READMEs.\n- src/github.gen.ts: generated snapshot; refresh with npm run sync.\n- public/projects/digital-wellbeing.png: actual app preview captured with sample data; not a usage claim.\n- Set about.photo to a real image path to show a portrait. Without one, About uses a text layout.\n- Set site.linkedinUrl only after verifying your own profile URL.\nContact form\nSet VITEWEB3FORMSACCESSKEY in .env (see .env.example). The Web3Forms access key is public by design; never put secret credentials in VITE …"
+  },
+  {
     "name": "four_season_guest_house",
     "description": "",
     "topics": [],
     "language": "JavaScript",
     "stars": 0,
-    "pushedAt": "2026-09-18T12:13:28Z",
+    "pushedAt": "2026-09-18T12:52:09Z",
     "url": "https://github.com/dahalujwal1000/four_season_guest_house",
     "homepage": "",
-    "readMe": "Four Season Guest House & Restaurant — Chame, Annapurna Circuit\nComplete booking website for the guest house: public site, booking engine with\nlive availability, and an admin panel. Zero dependencies, zero cost to run.\nRun it\nbash\nnpm start\nOpen http://localhost:4173\nOn first start the server creates data/fourseason.db (SQLite) and seeds it\nwith the 10 rooms, the restaurant menu, rooms/facilities/gallery content and a\nsample review. To start over, stop the server and delete the data folder.\nTest it\nbash\nnpm test\nRuns the full smoke test (87 checks) against a temporary server and database:\nsite pages, API, booking flow, availability calendar, admin auth + every admin\nendpoint. It cleans up after itself and never touches data/.\nWhat's inside\n Path What it is \n------\n public/ All pages: index, rooms, restaurant, gallery, guide, booking, contact, admin \n public/assets/js/app.js Frontend logic for the public site \n public/assets/js/admin.js Frontend logic for the admin panel \n public/assets/css/styles.css Design system (modern minimal, white, premium) \n public/images/ Downloaded sample photos (replace with real lodge photos) \n src/server.js Static file server + API routing + .env …"
+    "readMe": "Four Season Guest House & Restaurant — Chame, Annapurna Circuit\nComplete booking website for the guest house: public site, booking engine with\nlive availability, and an admin panel. Zero dependencies, zero cost to run.\nRun it\nbash\nnpm start\nOpen http://localhost:4173\nOn first start the server creates data/db.json and seeds it\nwith the 10 rooms, the restaurant menu, rooms/facilities/gallery content and a\nsample review. To start over, stop the server and delete the data folder.\nTest it\nbash\nnpm test\nRuns the full smoke test (99 checks) against a temporary server and datastore:\nsite pages, API, booking flow, availability calendar, admin auth + every admin\nendpoint. It cleans up after itself and never touches data/.\nWhat's inside\n Path What it is \n------\n public/ All pages: index, rooms, restaurant, gallery, guide, booking, contact, admin \n public/assets/js/app.js Frontend logic for the public site \n public/assets/js/admin.js Frontend logic for the admin panel \n public/assets/css/styles.css Design system (modern minimal, white, premium) \n public/images/ Downloaded sample photos (replace with real lodge photos) \n src/server.js Static file server + API routing + .env loading …"
   },
   {
     "name": "Digital_well-being",
@@ -48,17 +59,6 @@ export const githubRepos: GithubRepo[] = [
     "url": "https://github.com/dahalujwal1000/Digital_well-being",
     "homepage": "",
     "readMe": "Digital Wellbeing for Windows (v1.3)\nA Digital-Wellbeing-style single Windows app:\ntoday's Active screen time, Laptop open time, Idle time, Unlocks,\nhourly activity chart, top apps/websites, laptop sessions timeline —\ntracked by a background engine that lives in the system tray, viewed in a\npolished dashboard with animated ring, hover tooltips, click-to-jump week\nchart and pull-to-refresh. Restart-proof by design.\nv1 scope: tracking + storage + dashboard UI. NO blocking / task-kill.\nStack\nPython 3.11+ · CustomTkinter · SQLite · Win32 API via ctypes · PyInstaller\nRun from source (dev)\npowershell\n1. Install Python 3.11+ (winget install Python.Python.3.12) if needed\n2. From this folder:\npip install -r requirements.txt\npython runapp.py # tracker + tray (normal use)\npython runapp.py --dashboard # dashboard window\npython smoketest.py # opens the UI, auto-closes\nThe ONE executable\nThe whole product ships as a single exe:\n Command What it does \n------\n DigitalWellbeing.exe tracker + system tray (normal use / autostart) \n DigitalWellbeing.exe --dashboard open the dashboard window \n DigitalWellbeing.exe --no-tray headless tracker (testing) \n DigitalWellbeing.exe --autostart-status show the …"
-  },
-  {
-    "name": "dahalujwal1000.github.io",
-    "description": "",
-    "topics": [],
-    "language": "TypeScript",
-    "stars": 0,
-    "pushedAt": "2026-09-17T12:04:51Z",
-    "url": "https://github.com/dahalujwal1000/dahalujwal1000.github.io",
-    "homepage": "",
-    "readMe": "My Portfolio\nStack\n- React 18 + TypeScript + Vite\n- Plain CSS (CSS custom properties) — no UI framework\n- Google Fonts → JetBrains Mono\n- Deploy target: Vercel (static, free)\nQuick start\nbash\nnpm install\nnpm run dev # local dev → http://localhost:5173\nnpm run sync # refresh GitHub data into src/github.gen.ts\nnpm run build # sync + type-check + production build (dist/)\nnpm run preview # preview the production build\nCustomize\nAll site content (name, links, projects, terminal answers) lives in a single file:\nsrc/content.ts <- edit everything here\nProjects & the chatbot are fed from GitHub automatically. npm run sync\n(also runs before every build) harvests your public repos — description,\ntopics, language, stars, README digest — into src/github.gen.ts. Anything\nfound there shows up on the site and becomes chatbot knowledge. Hand-listed\nprojects in content.ts can claim a repo via repo: \"owner/name\" (stats +\nREADME flow in, no double-listing), hide unwanted repos via github.hide,\nand rewrite anything the machine got wrong — your words always win.\nProject structure\nsrc/\n content.ts <- edit everything here\n github.gen.ts <- GENERATED from GitHub (npm run sync)\n App.tsx <- hash router (#/ …"
   },
   {
     "name": "Research_Agent",
@@ -168,7 +168,7 @@ export const githubRepos: GithubRepo[] = [
     "pushedAt": "2026-08-01T04:28:12Z",
     "url": "https://github.com/dahalujwal1000/Wheather_mobile_app",
     "homepage": "",
-    "readMe": "Wheathermobileapp\nWheathermobileapp"
+    "readMe": ""
   },
   {
     "name": "Wheather_App",
@@ -179,7 +179,7 @@ export const githubRepos: GithubRepo[] = [
     "pushedAt": "2026-07-24T08:24:58Z",
     "url": "https://github.com/dahalujwal1000/Wheather_App",
     "homepage": "",
-    "readMe": "Weather App - Django Project\nA simple weather application built with Django that fetches real-time weather data from the OpenWeatherMap API.\nFeatures\n- Current weather information for any city\n- Temperature, humidity, pressure, and wind speed\n- Weather description and icon\n- Responsive design that works on mobile and desktop\n- Clean and modern UI with CSS animations\n- Error handling for invalid cities or API issues\n- Built with Django backend and vanilla JavaScript frontend\nSetup Instructions\n1. Clone or download this repository\n2. Install dependencies\nbash\npip install -r requirements.txt\n3. Get an API key from OpenWeatherMap\n- Go to OpenWeatherMap\n- Sign up for a free account\n- Get your API key from the API keys section\n4. Create a .env file\nCreate a .env file in the project root directory (same folder as manage.py) with the following content:\nOPENWEATHERAPIKEY=youractualapikeyhere\nReplace youractualapikeyhere with the actual API key you obtained from OpenWeatherMap.\n5. Run the development server\nbash\npython manage.py runserver\n6. Visit the application\nOpen your web browser and go to: http://127.0.0.1:8000/\nHow to Use\n1. Enter a city name in the input field (default is London)\n2. …"
+    "readMe": ""
   },
   {
     "name": "portfolio",
@@ -190,7 +190,7 @@ export const githubRepos: GithubRepo[] = [
     "pushedAt": "2026-07-22T10:58:39Z",
     "url": "https://github.com/dahalujwal1000/portfolio",
     "homepage": "",
-    "readMe": "React + Vite\nThis template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.\nCurrently, two official plugins are available:\n- @vitejs/plugin-react uses Oxc\n- @vitejs/plugin-react-swc uses SWC\nReact Compiler\nThe React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see this documentation.\nExpanding the Oxlint configuration\nIf you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the TS template for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project."
+    "readMe": ""
   },
   {
     "name": "dahalujwal1000",
@@ -201,7 +201,7 @@ export const githubRepos: GithubRepo[] = [
     "pushedAt": "2026-07-18T10:51:06Z",
     "url": "https://github.com/dahalujwal1000/dahalujwal1000",
     "homepage": "",
-    "readMe": "💫 About Me:\nDesigning wireframing Froentend HTML CSS JS\n🌐 Socials:\n \n💻 Tech Stack:\n \n📊 GitHub Stats:\n \n \n \n---"
+    "readMe": ""
   },
   {
     "name": "E-commerce",
@@ -245,8 +245,8 @@ export const githubRepos: GithubRepo[] = [
     "pushedAt": "2026-07-13T09:19:10Z",
     "url": "https://github.com/dahalujwal1000/new_practice",
     "homepage": "",
-    "readMe": "just a test page"
+    "readMe": ""
   }
 ];
 
-export const githubSyncedAt = "2026-09-18T12:33:52.568Z";
+export const githubSyncedAt = "2026-09-18T13:33:23.904Z";

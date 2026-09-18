@@ -16,6 +16,17 @@ export type GithubRepo = {
 
 export const githubRepos: GithubRepo[] = [
   {
+    "name": "four_season_guest_house",
+    "description": "",
+    "topics": [],
+    "language": "JavaScript",
+    "stars": 0,
+    "pushedAt": "2026-09-18T12:13:28Z",
+    "url": "https://github.com/dahalujwal1000/four_season_guest_house",
+    "homepage": "",
+    "readMe": "Four Season Guest House & Restaurant — Chame, Annapurna Circuit\nComplete booking website for the guest house: public site, booking engine with\nlive availability, and an admin panel. Zero dependencies, zero cost to run.\nRun it\nbash\nnpm start\nOpen http://localhost:4173\nOn first start the server creates data/fourseason.db (SQLite) and seeds it\nwith the 10 rooms, the restaurant menu, rooms/facilities/gallery content and a\nsample review. To start over, stop the server and delete the data folder.\nTest it\nbash\nnpm test\nRuns the full smoke test (87 checks) against a temporary server and database:\nsite pages, API, booking flow, availability calendar, admin auth + every admin\nendpoint. It cleans up after itself and never touches data/.\nWhat's inside\n Path What it is \n------\n public/ All pages: index, rooms, restaurant, gallery, guide, booking, contact, admin \n public/assets/js/app.js Frontend logic for the public site \n public/assets/js/admin.js Frontend logic for the admin panel \n public/assets/css/styles.css Design system (modern minimal, white, premium) \n public/images/ Downloaded sample photos (replace with real lodge photos) \n src/server.js Static file server + API routing + .env …"
+  },
+  {
     "name": "Digital_well-being",
     "description": "Digital Wellbeing for Windows — open-source PC screen-time tracker, app usage monitor, focus timer, distraction blocker, and productivity dashboard.",
     "topics": [
@@ -238,4 +249,4 @@ export const githubRepos: GithubRepo[] = [
   }
 ];
 
-export const githubSyncedAt = "2026-09-18T04:04:43.977Z";
+export const githubSyncedAt = "2026-09-18T12:33:52.568Z";

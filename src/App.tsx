@@ -14,8 +14,9 @@ export default function App() {
   return (
     <>
       <DotBackground />
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Nav />
-      <main>{route === "home" ? <HomePage /> : <AboutPage />}</main>
+      <main id="main-content" tabIndex={-1}>{route === "home" ? <HomePage /> : <AboutPage />}</main>
       <Footer />
     </>
   );

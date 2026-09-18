@@ -11,8 +11,6 @@ export default function Footer() {
           <a href={site.githubUrl} target="_blank" rel="noreferrer">
             github
           </a>
-          <span aria-hidden="true">/rss.xml</span>
-          <span aria-hidden="true">/sitemap.xml</span>
         </div>
       </div>
     </footer>

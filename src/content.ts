@@ -10,15 +10,15 @@ export const site = {
   name: "Ujwal",
   role: "Full-Stack Developer | 3D Web Explorer | Remote",
   tagline:
-    "I build and ship software end-to-end — web and mobile. From real-time dashboards to design systems, I care about fast, clean, well-crafted products. You are reading the source of this site right now.",
+    "I build web apps, desktop tools, and interactive experiences with React, Node.js, and Python. Explore the projects and the code behind them.",
   location: "Kathmandu, Nepal",
   tz: "GMT+5:45",
   email: "dahal.ujwal1000@gmail.com",
   github: "dahalujwal1000",
   githubUrl: "https://github.com/dahalujwal1000",
   // TODO: replace with a real LinkedIn handle
-  linkedin: "in/ujwal",
-  linkedinUrl: "https://www.linkedin.com/in/ujwal",
+  linkedin: "",
+  linkedinUrl: "",
   status: "AVAILABLE",
   statusNote: "open to roles & freelance",
   stack: ["TS", "React", "Node", "Postgres", "Three.js", "Vite"],
@@ -85,6 +85,8 @@ export const github = {
     "Wheather_mobile_app",
     "URL_Shortner",
     "portfolio",
+    "dahalujwal1000.github.io",
+    "My_Portfolio",
     "dahalujwal1000",
     "E-commerce",
     "College-Website",
@@ -338,7 +340,23 @@ export const projects: Project[] = [...manual, ...auto].map((p, i) => ({
   index: String(i + 1).padStart(2, "0"),
 }));
 
-export const terminalIntroduction = `// connected to ${site.domain} — ask anything.`;
+// Explicit selection; summaries below are grounded in the repository READMEs.
+const selected = [
+  { name: "Digital_well-being", title: "Digital Wellbeing", description: "A Windows screen-time tracker with a system-tray engine, app and website usage, session history, and a Python dashboard." },
+  { name: "norvic-hospital", title: "Norvic Hospital" },
+  { name: "Wheather_App", title: "WeatherApp" },
+  { name: "Research_Agent", title: "Research Agent", description: "A Python research pipeline that searches the web, extracts sources, and produces a structured Markdown report." },
+  { name: "QAgent", title: "Security & QA Agent", description: "An agent that runs security scanners, dependency audits, link checks, and tests, then ranks their findings." },
+  { name: "StudyMate-AI-Platform", title: "StudyMate AI", description: "An academic assistant for document summaries, questions with citations, quizzes, study planning, and progress tracking." },
+];
+export const selectedProjects: Project[] = selected.flatMap((item) => {
+  const repo = byRepo.get(norm(item.name));
+  if (!repo) return [];
+  const project = manual.find((p) => norm(p.repo?.split("/").pop() ?? "") === norm(item.name)) ?? fromRepo(repo);
+  return [{ ...project, title: item.title, description: item.description ?? project.description }];
+}).map((p, i) => ({ ...p, index: String(i + 1).padStart(2, "0") }));
+
+export const terminalIntroduction = "// Explore my projects, skills, and availability. Pick a topic below.";
 
 // ==========================================================================
 //  ~/ask-me.sh — the chatbot "fine-tunes" itself from this file.

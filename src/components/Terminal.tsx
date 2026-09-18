@@ -212,15 +212,16 @@ export default function Terminal() {
           )}
         </div>
         <div className="chips">
-          {chatChips.map((chip) => (
+          {chatChips.map((chip, i) => (
             <button
               key={chip}
               className="chip"
               type="button"
               disabled={busy}
+              aria-label={chip}
               onClick={() => respond(chip)}
             >
-              {chip}
+              {["My stack", "Availability", "Recent work", "This site"][i] ?? chip}
             </button>
           ))}
         </div>

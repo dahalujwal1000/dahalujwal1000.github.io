@@ -1,195 +1,128 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { site } from "../content";
 
-const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as
-  | string
-  | undefined;
+const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as string | undefined;
 const ENDPOINT = "https://api.web3forms.com/submit";
-
 type Status = "idle" | "sending" | "sent" | "error";
 
 export default function ContactSection() {
   const [status, setStatus] = useState<Status>("idle");
+  const [notice, setNotice] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const captcha = useRef<HCaptcha>(null);
+  const request = useRef<AbortController | null>(null);
+  const feedback = useRef<HTMLDivElement>(null);
+  useEffect(() => () => request.current?.abort(), []);
+  useEffect(() => {
+    if (status === "error" || status === "sent") feedback.current?.focus();
+  }, [status]);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (request.current) return;
     const form = e.currentTarget;
-
-    // Demo mode — no access key configured, nothing is sent anywhere.
-    if (!ACCESS_KEY) {
-      setStatus("sent");
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+    if (!name || !email || !message) {
+      setNotice("Please fill in your name, email, and message.");
+      setStatus("error");
       return;
     }
-
+    if (!ACCESS_KEY) {
+      const subject = encodeURIComponent("Portfolio message from " + name);
+      const body = encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\n" + message);
+      window.location.href = "mailto:" + site.email + "?subject=" + subject + "&body=" + body;
+      setNotice("Your email app will open with your draft. Send it there, or email me directly below.");
+      setStatus("idle");
+      return;
+    }
+    if (!captchaToken) {
+      setNotice("Please complete the spam check before sending. Your draft is saved here.");
+      setStatus("error");
+      return;
+    }
+    const controller = new AbortController();
+    request.current = controller;
+    const timeout = window.setTimeout(() => controller.abort(), 20000);
     setStatus("sending");
+    setNotice("Sending your message…");
     try {
-      const data = new FormData(form);
       const res = await fetch(ENDPOINT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: ACCESS_KEY,
-          name: data.get("name"),
-          email: data.get("email"),
-          message: data.get("message"),
-          subject: `Portfolio message from ${data.get("name") ?? "someone"}`,
-          from_name: "Portfolio Contact Form",
-        }),
+        signal: controller.signal,
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: ACCESS_KEY, name, email, message,
+          "h-captcha-response": captchaToken,
+          subject: "Portfolio message from " + name, from_name: "Portfolio Contact Form" }),
       });
       const json = await res.json();
-      if (json.success) {
-        form.reset();
-        setStatus("sent");
-      } else {
+      if (!res.ok || !json.success) {
+        setNotice(res.status === 429
+          ? "Too many attempts. Please wait a moment, complete the spam check again, and retry. Your draft is still here."
+          : "Your message could not be sent. Complete the spam check again and retry, or email me below. Your draft is still here.");
         setStatus("error");
+        return;
       }
+      form.reset();
+      setNotice("Message sent. Thanks for getting in touch!");
+      setStatus("sent");
     } catch {
+      setNotice("Delivery could not be confirmed. Your draft is still here. Check your connection and retry, or email me below.");
       setStatus("error");
+    } finally {
+      window.clearTimeout(timeout);
+      request.current = null;
+      setCaptchaToken("");
+      captcha.current?.resetCaptcha();
     }
   };
-
-  const reset = () => setStatus("idle");
 
   return (
     <section className="container section" id="contact">
       <div className="sec-head" data-reveal>
-        <p className="dim">03 GET IN TOUCH · ~/contact · replies in &lt; 24h</p>
-        <h2>
-          <span className="dollar">$</span> echo &quot;hello, world&quot;
-        </h2>
+        <p className="dim">03 GET IN TOUCH · ~/contact</p>
+        <h2><span className="dollar">$</span> echo &quot;hello, world&quot;</h2>
       </div>
-
       <div className="contact-grid">
         <div className="cinfo" data-reveal>
-          <h3
-            className="big"
-            style={{ fontSize: "clamp(1.6rem, 3.4vw, 2.2rem)" }}
-          >
-            Let&apos;s build something.
-          </h3>
+          <h3 className="contact-title">Let&apos;s build something.</h3>
           <ul className="klist">
-            <li>
-              <span className="k dim">~/contact</span> replies in &lt; 24h
-            </li>
-            <li>
-              <span className="k dim">email</span>{" "}
-              <a href={`mailto:${site.email}`}>{site.email} →</a>
-            </li>
-            <li>
-              <span className="k dim">location</span> {site.location} ·{" "}
-              {site.tz}
-            </li>
-            <li>
-              <span className="k dim">status</span>{" "}
-              <span className="ok">accepting work · Q3 2026</span>
-            </li>
-            <li>
-              <span className="k dim">stack</span> {site.stack.join(" / ")}
-            </li>
-            <li>
-              <span className="k dim">github</span>{" "}
-              <a href={site.githubUrl} target="_blank" rel="noreferrer">
-                @{site.github}
-              </a>
-            </li>
-            <li>
-              <span className="k dim">linkedin</span>{" "}
-              <a href={site.linkedinUrl} target="_blank" rel="noreferrer">
-                {site.linkedin}
-              </a>
-            </li>
+            <li><span className="k dim">email</span> <a href={"mailto:" + site.email}>{site.email} →</a></li>
+            <li><span className="k dim">location</span> {site.location} · {site.tz}</li>
+            <li><span className="k dim">status</span> <span className="ok">{site.statusNote}</span></li>
+            <li><span className="k dim">stack</span> {site.stack.join(" / ")}</li>
+            <li><span className="k dim">github</span> <a href={site.githubUrl} target="_blank" rel="noreferrer">@{site.github}</a></li>
+            {site.linkedinUrl && <li><span className="k dim">linkedin</span> <a href={site.linkedinUrl} target="_blank" rel="noreferrer">LinkedIn ↗</a></li>}
           </ul>
         </div>
-
-        <form
-          className="cform"
-          data-reveal
-          style={{ transitionDelay: "120ms" }}
-          onSubmit={onSubmit}
-        >
-          {status === "sent" ? (
-            <div className="sent">
-              <p className="ok">
-                ✔ {ACCESS_KEY ? "message sent" : "message queued (demo mode)"}
-              </p>
-              <p className="dim small">
-                {ACCESS_KEY
-                  ? "Thanks! I'll get back to you soon."
-                  : "Demo mode — this form doesn't send anywhere yet. Add a VITE_WEB3FORMS_ACCESS_KEY in .env to go live, or mail me directly: "}
-                {!ACCESS_KEY && (
-                  <a href={`mailto:${site.email}`}>{site.email}</a>
-                )}
-              </p>
-              <button
-                className="btn"
-                type="button"
-                onClick={reset}
-                style={{ marginTop: "12px" }}
-              >
-                send another →
-              </button>
-            </div>
-          ) : status === "error" ? (
-            <div className="sent">
-              <p className="dollar">✖ message failed</p>
-              <p className="dim small">
-                Something went wrong — please try again or mail me directly:{" "}
-                <a href={`mailto:${site.email}`}>{site.email}</a>
-              </p>
-              <button
-                className="btn"
-                type="button"
-                onClick={reset}
-                style={{ marginTop: "12px" }}
-              >
-                try again ↵
-              </button>
-            </div>
-          ) : (
-            <>
-              <label>
-                NAME *
-                <input
-                  required
-                  name="name"
-                  placeholder="Ada Lovelace"
-                  autoComplete="name"
-                />
-              </label>
-              <label>
-                EMAIL *
-                <input
-                  required
-                  type="email"
-                  name="email"
-                  placeholder="ada@example.com"
-                  autoComplete="email"
-                />
-              </label>
-              <label>
-                MESSAGE *
-                <textarea
-                  required
-                  name="message"
-                  rows={4}
-                  placeholder="Let's build something together…"
-                />
-              </label>
-              <button
-                className="btn"
-                type="submit"
-                disabled={status === "sending"}
-              >
-                {status === "sending" ? "sending…" : "send message ↵"}
-              </button>
-              <p className="dim small">
-                {ACCESS_KEY ? "protected · rate-limited" : "demo mode · not connected"}
-              </p>
-            </>
-          )}
+        <form className="cform" data-reveal onSubmit={onSubmit} aria-busy={status === "sending"}>
+          <div ref={feedback} className={notice ? "form-notice" : undefined} tabIndex={-1}>
+            <p role="status" aria-atomic="true">{status !== "error" ? notice : ""}</p>
+            <p role="alert" aria-atomic="true">{status === "error" ? notice : ""}</p>
+          </div>
+          <fieldset disabled={status === "sending"} hidden={status === "sent"}>
+            <legend className="sr-only">Send a message</legend>
+            <label>NAME *<input required name="name" maxLength={100} placeholder="Your name" autoComplete="name" /></label>
+            <label>EMAIL *<input required type="email" name="email" maxLength={254} placeholder="you@example.com" autoComplete="email" /></label>
+            <label>MESSAGE *<textarea required name="message" maxLength={5000} rows={4} placeholder="Tell me about your project…" /></label>
+            {ACCESS_KEY && <div className="captcha-wrap"><HCaptcha ref={captcha}
+              sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2" reCaptchaCompat={false} size="compact"
+              onVerify={setCaptchaToken} onExpire={() => setCaptchaToken("")}
+              onError={() => { if (request.current) return; setCaptchaToken(""); setNotice("The spam check could not load. Retry it or use the email link below. Your draft is still here."); setStatus("error"); }}
+            /></div>}
+            <button className="btn" type="submit" disabled={status === "sending"}>
+              {status === "sending" ? "sending…" : status === "error" ? "try again ↵" : ACCESS_KEY ? "send message ↵" : "open email draft ↗"}
+            </button>
+          </fieldset>
+          {status === "sent" && <button className="btn" type="button" onClick={() => {
+            setStatus("idle"); setNotice("");
+            window.requestAnimationFrame(() => document.querySelector<HTMLInputElement>('.cform input[name="name"]')?.focus());
+          }}>send another →</button>}
+          <p className="dim small">Or <a href={"mailto:" + site.email}>email me directly ↗</a></p>
+          {ACCESS_KEY && <p className="dim small">Your name, email, and message are sent through Web3Forms to my inbox.</p>}
         </form>
       </div>
     </section>

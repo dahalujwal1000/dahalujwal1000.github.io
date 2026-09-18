@@ -3,7 +3,7 @@ import { about, site } from "../content";
 export default function AboutPage() {
   return (
     <section className="container section page" id="about">
-      <div className="about-grid">
+      <div className={about.photo ? "about-grid" : "about-grid about-text-only"}>
         <div className="about-copy">
           <p className="crumb dim" data-reveal>
             ~ / about
@@ -63,25 +63,10 @@ export default function AboutPage() {
           </ul>
         </div>
 
-        <div className="photo-card" data-reveal style={{ transitionDelay: "200ms" }}>
-          <span className="photo-badge" aria-hidden="true">
-            ★ irl
-          </span>
-          {about.photo ? (
-            <img src={about.photo} alt={`${site.name} — portrait`} />
-          ) : (
-            <div className="photo-placeholder" aria-hidden="true">
-              <p>
-                <span className="dollar">$</span> cat portrait.jpg
-              </p>
-              <p className="dim">
-                no photo yet — drop portrait.jpg into public/ and set
-                about.photo in content.ts
-              </p>
-              <span className="photo-ascii">&gt;_</span>
-            </div>
-          )}
-        </div>
+        {about.photo && <div className="photo-card" data-reveal>
+          <span className="photo-badge" aria-hidden="true">★ irl</span>
+          <img src={about.photo} alt={site.name + " — portrait"} width={360} height={450} />
+        </div>}
       </div>
     </section>
   );

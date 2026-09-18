@@ -11,7 +11,7 @@
   --border: #30363d;
   --fg: #c9d1d9;
   --fg-dim: #8b949e;
-  --fg-faint: #6e7681;
+  --fg-faint: #8b949e;
   --green: #3fb950;
   --green-dim: #2ea043;
   /* flashlight dot grid (values lifted from akkila.dev dark theme) */
@@ -37,7 +37,7 @@
   --border: #d0d7de;
   --fg: #1f2328;
   --fg-dim: #59636e;
-  --fg-faint: #6e7781;
+  --fg-faint: #59636e;
   --green: #1a7f37;
   --green-dim: #116329;
   --amber: #9a6700;
@@ -358,13 +358,7 @@ h3 {
     grid-template-columns: 1fr;
   }
 
-  .about-grid {
-    grid-template-columns: 1fr;
-  }
 
-  .pcards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .status-line {
@@ -449,7 +443,7 @@ h3 {
   flex-direction: column;
   width: 100%;
   max-width: 640px;
-  height: clamp(380px, 58vh, 460px);
+  height: 400px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--bg-soft);
@@ -696,18 +690,40 @@ h3 {
 
 /* ---------- project cards ---------- */
 .pcards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  display: flex;
+  gap: 24px;
   margin-top: 8px;
+  padding: 8px 4px 24px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 4px;
+  scrollbar-color: var(--fg-faint) var(--bg-soft);
 }
 
-.pcards > [data-reveal] {
+.project-slide {
   display: flex;
+  flex: 0 0 min(340px, 85%);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.project-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pcards:focus-visible,
+.project-controls button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
 }
 
 .pcard {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--border);
@@ -768,9 +784,34 @@ h3 {
   padding-top: 12px;
   border-top: 1px dashed var(--border);
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
   font-size: 12.5px;
+}
+
+.pcard-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -8px -8px -8px auto;
+  padding: 8px;
+  color: var(--green);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pcard-action:hover {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.pcard-action:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 .sec-foot {
@@ -804,9 +845,14 @@ h3 {
   margin-top: 8px;
 }
 
+.about-copy {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .about-handle {
   font-size: 14px;
-  margin: -8px 0 22px;
+  margin: 12px 0 22px;
 }
 
 .about-rows {
@@ -824,12 +870,20 @@ h3 {
   font-size: 14px;
 }
 
+.about-rows li > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .about-rows .k {
   width: 110px;
   flex-shrink: 0;
 }
 
 .photo-card {
+  width: 100%;
+  max-width: 360px;
+  min-width: 0;
   position: relative;
   border: 1px solid var(--green-dim);
   border-radius: 14px;
@@ -967,24 +1021,55 @@ h3 {
   }
 
  /* ---------- responsive ---------- */
+@media (max-width: 940px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+
+  .about-grid .photo-card {
+    justify-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  #about {
+    padding: 40px 20px;
+  }
+
+  .about-rows li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
 @media (max-width: 720px) {
   .contact-grid {
     grid-template-columns: 1fr;
   }
 
-  .pcards {
-    grid-template-columns: 1fr;
-  }
 
   .nav-links {
     order: 3;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 0 16px;
+    padding-bottom: 8px;
+  }
+
+  .nav-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   /* links wrap to their own row — keep the toggle pinned right */
   .theme-toggle {
     margin-left: auto;
+    width: 44px;
+    height: 44px;
   }
 }
 
@@ -1014,4 +1099,65 @@ h3 {
   html {
     scroll-behavior: auto;
   }
+}
+
+/* Readability, form recovery, and touch controls */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 12px 16px;
+  background: var(--bg-soft);
+  transform: translateY(-160%);
+}
+.skip-link:focus { transform: none; }
+.btn, .chip, .send, .theme-toggle { min-height: 44px; }
+.theme-toggle { min-width: 44px; }
+.chip, .send { padding: 8px 12px; }
+.btn:disabled { opacity: .45; cursor: default; transform: none; }
+.lead, .pdesc { font-size: 16px; line-height: 1.75; }
+.pcard-foot { margin-top: auto; padding-top: 16px; }
+.project-spotlight { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; gap: 32px; margin: 0 0 40px; }
+.project-spotlight img { display: block; width: 100%; height: auto; border-radius: 8px; }
+.project-spotlight figcaption { min-width: 0; }
+.project-spotlight h3 { font-size: 1.4rem; }
+.project-spotlight p { margin: 12px 0 20px; }
+@media (max-width: 720px) { .project-spotlight { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+.about-text-only { grid-template-columns: minmax(0, 1fr); max-width: 720px; margin-inline: auto; }
+.contact-title { font-size: clamp(1.6rem, 3.4vw, 2.2rem); line-height: 1.2; margin-bottom: 24px; }
+.cinfo, .cform { min-width: 0; overflow-wrap: anywhere; }
+.cform fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+.cform input, .cform textarea { width: 100%; min-height: 44px; font-size: 16px; }
+.cform input::placeholder, .cform textarea::placeholder { color: var(--fg-dim); opacity: 1; }
+.cform textarea { resize: vertical; }
+.captcha-wrap { margin: 18px 0; }
+.form-notice { padding: 12px 0; margin-bottom: 12px; }
+.form-notice p { margin: 0; }
+.form-notice [role="alert"] { color: var(--fg); }
+.cform .small a { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 720px) {
+  .hero { padding: 48px 20px 32px; }
+  .hero-grid { gap: 24px; }
+  .cta-row { margin-bottom: 0; }
+  .topbar-inner { gap: 8px 20px; }
+  .term { height: 380px; }
+  .prompt-row input { font-size: 16px; }
+  .section { padding-block: 48px; scroll-margin-top: 150px; }
+  .contact-grid { gap: 24px; }
 }

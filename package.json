@@ -6,19 +6,26 @@
   "scripts": {
     "dev": "vite",
     "sync": "node scripts/sync-github.mjs",
-    "prebuild": "npm run sync",
+    "prebuild": "node scripts/sync-github.mjs",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "tsc --noEmit",
+    "test": "node tests/browser-smoke.cjs"
   },
   "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^2.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.2",
+    "@vitejs/plugin-react": "^6.1.1",
+    "playwright-core": "^1.63.0",
     "typescript": "^5.6.2",
-    "vite": "^5.4.8"
+    "vite": "^8.3.0"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   }
 }

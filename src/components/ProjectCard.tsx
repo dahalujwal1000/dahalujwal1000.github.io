@@ -3,7 +3,7 @@ import { statsLine, type Project } from "../content";
 /** One project card — used on the home (featured) and projects pages. */
 export default function ProjectCard({ p }: { p: Project }) {
   const stats = statsLine(p);
-  const isLink = p.href !== "#";
+  const isLink = /^https?:\/\//.test(p.href);
   const label = /github\.com/.test(p.href) ? "code" : "live";
   return (
     <article className="pcard">
@@ -30,7 +30,15 @@ export default function ProjectCard({ p }: { p: Project }) {
       <div className="pcard-foot">
         <span className="dim">{p.path}</span>
         {isLink && (
-          <span className="dim">{label === "live" ? "↗ live" : "→ code"}</span>
+          <a
+            className="pcard-action"
+            href={p.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Open ${p.title} ${label}`}
+          >
+            <span>{label === "live" ? "view live ↗" : "view code →"}</span>
+          </a>
         )}
       </div>
     </article>

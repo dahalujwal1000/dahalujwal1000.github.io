@@ -1,70 +1,52 @@
-# My Portfolio
+# Ujwal's portfolio
 
+React + TypeScript portfolio with a terminal-style interface, six curated projects, a local project Q&A widget, and a Web3Forms contact form.
 
+## Development
 
-## Stack
+Use Node 20.19+ or 22.12+ (Node 24 works).
 
-- **React 18 + TypeScript + Vite**
-- Plain CSS (CSS custom properties) — no UI framework
-- Google Fonts → JetBrains Mono
-- Deploy target: Vercel (static, free)
+    npm ci
+    npm run dev
+    npm run check
+    npm run build
+    npm run preview
+    npm audit
 
-## Quick start
+Build refreshes public GitHub metadata, checks TypeScript, and writes static files to dist/. A failed metadata fetch preserves the existing snapshot. Build does not publish anything. Deployment and custom-domain changes are on hold.
 
-```bash
-npm install
-npm run dev      # local dev  → http://localhost:5173
-npm run sync     # refresh GitHub data into src/github.gen.ts
-npm run build    # sync + type-check + production build (dist/)
-npm run preview  # preview the production build
-```
+## Content
 
-## Customize
+- src/content.ts: identity, About copy, projects, and local Q&A answers.
+- selectedProjects: explicit six-project selection, grounded in repository descriptions/READMEs.
+- src/github.gen.ts: generated snapshot; refresh with npm run sync.
+- public/projects/digital-wellbeing.png: actual app preview captured with sample data; not a usage claim.
+- Set about.photo to a real image path to show a portrait. Without one, About uses a text layout.
+- Set site.linkedinUrl only after verifying your own profile URL.
 
-All site content (name, links, projects, terminal answers) lives in a single file:
+## Contact form
 
-```
-src/content.ts   <- edit everything here
-```
+Set VITE_WEB3FORMS_ACCESS_KEY in .env (see .env.example). The Web3Forms access key is public by design; never put secret credentials in VITE_ variables.
 
-**Projects & the chatbot are fed from GitHub automatically.** `npm run sync`
-(also runs before every build) harvests your public repos — description,
-topics, language, stars, README digest — into `src/github.gen.ts`. Anything
-found there shows up on the site and becomes chatbot knowledge. Hand-listed
-projects in `content.ts` can claim a repo via `repo: "owner/name"` (stats +
-README flow in, no double-listing), hide unwanted repos via `github.hide`,
-and rewrite anything the machine got wrong — your words always win.
+The form uses Web3Forms' documented shared hCaptcha site key. Enable hCaptcha as the spam-blocking method in your Web3Forms dashboard to require verification on the server. The frontend sends the token and blocks empty CAPTCHA submissions, but dashboard enforcement cannot be configured in this repository.
 
-## Project structure
+Failed requests preserve the visitor's draft. Requests time out after 20 seconds; an uncertain delivery is described as unconfirmed. Without an access key, the form opens a populated email draft instead of claiming success.
 
-```
-src/
-  content.ts              <- edit everything here
-  github.gen.ts           <- GENERATED from GitHub (npm run sync)
-  App.tsx                 <- hash router (#/ · #/projects · #/about · #/contact)
-  main.tsx
-  index.css
-  hooks/
-    useHashRoute.ts       <- tiny hash router (no dependency)
-    useReveal.ts          <- scroll-reveal (IntersectionObserver)
-  pages/
-    HomePage.tsx          <- hero + chatbot + featured project cards
-    ProjectsPage.tsx      <- all projects as cards
-    AboutPage.tsx         <- $ whoami (details + photo card)
-    ContactPage.tsx       <- contact form
-  components/
-    DotBackground.tsx     <- flashlight dot grid (CSS layers + pointer-following mask)
-    ProjectCard.tsx       <- shared project card
-    Nav.tsx
-    Hero.tsx
-    Terminal.tsx          <- ~/ask-me.sh chatbot (answers generated from content.ts)
-    Footer.tsx
-scripts/
-  sync-github.mjs         <- build-time GitHub harvester (no keys needed)
-```
+References:
+- https://docs.web3forms.com/getting-started/customizations/spam-protection/hcaptcha
+- https://docs.web3forms.com/getting-started/faq
 
-## Roadmap
+## Structure
 
-- [x] Projects + chatbot fed automatically from GitHub (build-time sync)
-- [x] Wire the contact form (Web3Forms — free; set `VITE_WEB3FORMS_ACCESS_KEY` in `.env`, see `.env.example`)
-- [ ] Optional 3D hero object (Three.js / React Three Fiber)
+    src/pages/HomePage.tsx       Hero, project rail, contact
+    src/pages/AboutPage.tsx      About page
+    src/components/Terminal.tsx  Local keyword-based Q&A (not an LLM)
+    src/hooks/useHashRoute.ts    Home/About hash navigation
+    src/index.css               Theme, layout, responsive styles
+    scripts/sync-github.mjs      Public repository metadata fetch
+
+Dependabot configuration is included for weekly dependency updates once pushed. No deployment workflow is enabled by these changes.
+
+## Browser regression checks
+
+Run npm test with Chrome installed (or set BROWSER_CHANNEL=msedge for Edge). The check starts and stops an isolated local server on port 5181. CAPTCHA and form delivery are stubbed; it never sends mail. It checks responsive layouts, carousel limits, CAPTCHA resets, form failures, draft preservation, and navigation.

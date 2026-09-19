@@ -35,7 +35,7 @@ export default function ProjectCard({ p }: { p: Project }) {
             href={p.href}
             target="_blank"
             rel="noreferrer"
-            aria-label={`Open ${p.title} ${label}`}
+            aria-label={`view ${label} — open ${p.title}`}
           >
             <span>{label === "live" ? "view live ↗" : "view code →"}</span>
           </a>

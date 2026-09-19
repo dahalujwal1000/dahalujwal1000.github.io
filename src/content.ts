@@ -4,37 +4,6 @@
 //  TODO: replace placeholders with your real details before deploying.
 // ==========================================================================
 
-export const site = {
-  // TODO: pick the domain you will actually deploy to
-  domain: "ujwal.dev",
-  name: "Ujwal",
-  role: "Full-Stack Developer | 3D Web Explorer | Remote",
-  tagline:
-    "I build web apps, desktop tools, and interactive experiences with React, Node.js, and Python. Explore the projects and the code behind them.",
-  location: "Kathmandu, Nepal",
-  tz: "GMT+5:45",
-  email: "dahal.ujwal1000@gmail.com",
-  github: "dahalujwal1000",
-  githubUrl: "https://github.com/dahalujwal1000",
-  // TODO: replace with a real LinkedIn handle
-  linkedin: "",
-  linkedinUrl: "",
-  status: "AVAILABLE",
-  statusNote: "open to roles & freelance",
-  stack: ["TS", "React", "Node", "Postgres", "Three.js", "Vite"],
-};
-
-// About page — your "$ whoami" details. Edit freely.
-export const about = {
-  accent: "Full-stack developer",
-  intro:
-    "who can't rest until I understand what's under the hood — whether that's a codebase, a system, or something I'm building in the garage.",
-  // TODO: adjust to your languages
-  speaks: "Nepali (native), English (fluent), Hindi",
-  // drop a photo into public/ (e.g. portrait.jpg) and set photo: "/portrait.jpg"
-  photo: "",
-};
-
 import { githubRepos, type GithubRepo } from "./github.gen";
 
 // A project YOU list by hand. Optional `repo: "owner/name"` links the entry
@@ -68,7 +37,6 @@ export type Project = {
   stars?: number;
   language?: string;
   updatedAt?: string;
-  readMe?: string;
   source: "manual" | "github";
 };
 
@@ -283,7 +251,6 @@ function fromRepo(r: GithubRepo): Project {
     stars: r.stars,
     language: r.language,
     updatedAt: r.pushedAt,
-    readMe: r.readMe,
     source: "github",
   };
 }
@@ -309,7 +276,6 @@ const manual: Project[] = projectInputs.map((p) => {
     stars: repo?.stars,
     language: repo?.language,
     updatedAt: repo?.pushedAt,
-    readMe: repo?.readMe,
     source: "manual" as const,
   };
 });
@@ -355,164 +321,3 @@ export const selectedProjects: Project[] = selected.flatMap((item) => {
   const project = manual.find((p) => norm(p.repo?.split("/").pop() ?? "") === norm(item.name)) ?? fromRepo(repo);
   return [{ ...project, title: item.title, description: item.description ?? project.description }];
 }).map((p, i) => ({ ...p, index: String(i + 1).padStart(2, "0") }));
-
-export const terminalIntroduction = "// Explore my projects, skills, and availability. Pick a topic below.";
-
-// ==========================================================================
-//  ~/ask-me.sh — the chatbot "fine-tunes" itself from this file.
-//  - Project Q&A is generated automatically from the `projects` array above
-//    (title + tags + description) — edit those and the bot learns instantly.
-//  - Everything else lives in `chatTopics` below: add a topic (keywords +
-//    answer lines) to teach the bot something new.
-//  Matching is loose: single words hit as tokens, multi-word phrases must
-//  appear verbatim, and trailing "s" is stemmed away on both sides.
-// ==========================================================================
-
-export type ChatTopic = { keywords: string[]; answers: string[] };
-
-// The suggestion chips rendered above the input, like the reference site.
-export const chatChips: string[] = [
-  "what is your stack?",
-  "are you available for hire?",
-  "tell me about a recent project",
-  "how was this site built?",
-];
-
-export const chatTopics: ChatTopic[] = [
-  {
-    keywords: [
-      "stack",
-      "tech",
-      "technologies",
-      "tool",
-      "tools",
-      "language",
-      "languages",
-      "framework",
-      "frameworks",
-      "typescript",
-      "react",
-      "node",
-      "postgres",
-      "vite",
-    ],
-    answers: [
-      "Core: TypeScript / React / Node / Postgres.",
-      "3D & graphics: Three.js + React Three Fiber.",
-      "Tooling: Vite, git — plus whatever the job needs.",
-    ],
-  },
-  {
-    keywords: [
-      "hire",
-      "hiring",
-      "available",
-      "availability",
-      "freelance",
-      "job",
-      "jobs",
-      "role",
-      "roles",
-      "opportunity",
-      "opportunities",
-      "recruit",
-      "recruiter",
-      "open to work",
-    ],
-    answers: [
-      `Yes — ${site.status.toLowerCase()} · ${site.statusNote}.`,
-      `Fastest route → ${site.email} (replies in < 24h).`,
-    ],
-  },
-  {
-    keywords: [
-      "contact",
-      "email",
-      "mail",
-      "reach",
-      "message",
-      "touch",
-      "linkedin",
-      "call",
-      "dm",
-    ],
-    answers: [
-      "The form is right below this chat 👇",
-      `Or mail ${site.email} directly — replies < 24h.`,
-      `LinkedIn: ${site.linkedinUrl}`,
-    ],
-  },
-  {
-    keywords: [
-      "site",
-      "website",
-      "portfolio",
-      "built",
-      "build",
-      "deploy",
-      "deployed",
-      "deploying",
-      "hosting",
-      "host",
-      "hosted",
-      "vercel",
-      "source",
-      "made",
-    ],
-    answers: [
-      "React + TypeScript on Vite — no UI framework, hand-rolled CSS.",
-      "The dot grid and this terminal are built from scratch.",
-      "Deployed on Vercel: git push → auto deploy.",
-    ],
-  },
-  {
-    keywords: [
-      "who",
-      "about",
-      "yourself",
-      "intro",
-      "introduce",
-      "background",
-      "bio",
-      "ujwal",
-      "location",
-      "based",
-      "where",
-    ],
-    answers: [
-      `${site.name} — ${site.role}.`,
-      `Based in ${site.location} (${site.tz}). ${site.tagline}`,
-    ],
-  },
-  {
-    keywords: [
-      "project",
-      "projects",
-      "recent",
-      "latest",
-      "showcase",
-      "featured",
-    ],
-    answers: [
-      `Featured work — ${projects.length} on this site:`,
-      ...projects.map(
-        (p) =>
-          `[${p.index}] ${p.title} — ${[p.year, p.role]
-            .filter(Boolean)
-            .join(" · ")}`
-      ),
-      `Ask about one by name — e.g. "tell me about ${projects[0].title
-        .split(" ")[0]
-        .toLowerCase()}". More on github → @${site.github}.`,
-    ],
-  },
-  {
-    keywords: ["hi", "hello", "hey", "yo", "sup", "thanks", "thank", "cool", "awesome", "nice"],
-    answers: ["👋 hey. Ask about the projects, the stack — or how to hire me."],
-  },
-];
-
-export const chatFallback: string[] = [
-  "// command not found — I'm a small terminal, not an LLM (yet).",
-  "Try the chips below, or ask about a project by name.",
-];

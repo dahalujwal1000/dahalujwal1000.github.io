@@ -1,4 +1,4 @@
-import { site } from "../content";
+import { site } from "../site";
 import Terminal from "./Terminal";
 
 export default function Hero() {
@@ -6,23 +6,23 @@ export default function Hero() {
     <section className="hero container" id="home">
       <div className="hero-grid">
         <div className="hero-copy">
-          <p className="status-line" data-reveal>
+          <p className="status-line">
             <span className="dot" aria-hidden="true" />
             {site.status} · {site.statusNote}
           </p>
-          <h1 className="big" data-reveal style={{ transitionDelay: "80ms" }}>
+          <h1 className="big">
             <span className="dollar">$</span> hi, I&apos;m
             <br />
             <span className="accent">{site.name}</span>
             <span className="caret" aria-hidden="true" />
           </h1>
-          <p className="role" data-reveal style={{ transitionDelay: "160ms" }}>
+          <p className="role">
             {site.role}
           </p>
-          <p className="lead" data-reveal style={{ transitionDelay: "240ms" }}>
+          <p className="lead">
             {site.tagline}
           </p>
-          <div className="cta-row" data-reveal style={{ transitionDelay: "320ms" }}>
+          <div className="cta-row">
             <a className="btn" href="#contact">
               get in touch →
             </a>

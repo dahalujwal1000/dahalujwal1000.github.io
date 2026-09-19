@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ProjectCard from "./ProjectCard";
-import { selectedProjects, site } from "../content";
+import { selectedProjects } from "../content";
+import { site } from "../site";
 
 export default function ProjectsSection() {
   const rail = useRef<HTMLDivElement>(null);
@@ -8,12 +9,29 @@ export default function ProjectsSection() {
   useEffect(() => {
     const el = rail.current;
     if (!el) return;
-    const update = () => setEdges({ start: el.scrollLeft <= 1, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 1 });
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const next = {
+        start: el.scrollLeft <= 1,
+        end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 1,
+      };
+      setEdges((current) =>
+        current.start === next.start && current.end === next.end ? current : next
+      );
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
     update();
-    el.addEventListener("scroll", update, { passive: true });
-    const observer = new ResizeObserver(update);
+    el.addEventListener("scroll", scheduleUpdate, { passive: true });
+    const observer = new ResizeObserver(scheduleUpdate);
     observer.observe(el);
-    return () => { el.removeEventListener("scroll", update); observer.disconnect(); };
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      el.removeEventListener("scroll", scheduleUpdate);
+      observer.disconnect();
+    };
   }, []);
   const scrollProjects = (direction: number) => {
     const el = rail.current;
@@ -42,8 +60,8 @@ export default function ProjectsSection() {
         </figcaption>
       </figure>
       <div className="project-controls" aria-label="Project scroll controls">
-        <button className="btn ghost" type="button" disabled={edges.start} aria-label="Scroll projects left" aria-controls="project-rail" onClick={() => scrollProjects(-1)}>← Previous</button>
-        <button className="btn ghost" type="button" disabled={edges.end} aria-label="Scroll projects right" aria-controls="project-rail" onClick={() => scrollProjects(1)}>Next →</button>
+        <button className="btn ghost" type="button" disabled={edges.start} aria-label="Previous — scroll projects left" aria-controls="project-rail" onClick={() => scrollProjects(-1)}>← Previous</button>
+        <button className="btn ghost" type="button" disabled={edges.end} aria-label="Next — scroll projects right" aria-controls="project-rail" onClick={() => scrollProjects(1)}>Next →</button>
       </div>
       <div className="pcards" id="project-rail" ref={rail} role="region" aria-label="Selected projects" tabIndex={0}>
         {selectedProjects.map((p) => <div className="project-slide" key={p.path}><ProjectCard p={p} /></div>)}

@@ -1,6 +1,8 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { site } from "../content";
+import { FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
+import type { CaptchaHandle } from "./Captcha";
+import { site } from "../site";
+
+const Captcha = lazy(() => import("./Captcha"));
 
 const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as string | undefined;
 const ENDPOINT = "https://api.web3forms.com/submit";
@@ -10,13 +12,30 @@ export default function ContactSection() {
   const [status, setStatus] = useState<Status>("idle");
   const [notice, setNotice] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
-  const captcha = useRef<HCaptcha>(null);
+  const captcha = useRef<CaptchaHandle>(null);
+  const captchaRoot = useRef<HTMLDivElement>(null);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const request = useRef<AbortController | null>(null);
   const feedback = useRef<HTMLDivElement>(null);
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => {
     if (status === "error" || status === "sent") feedback.current?.focus();
   }, [status]);
+  useEffect(() => {
+    if (!ACCESS_KEY || showCaptcha) return;
+    const el = captchaRoot.current;
+    if (!el || !("IntersectionObserver" in window)) {
+      setShowCaptcha(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setShowCaptcha(true);
+      observer.disconnect();
+    }, { rootMargin: "300px 0px" });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [showCaptcha]);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,7 +95,7 @@ export default function ContactSection() {
       window.clearTimeout(timeout);
       request.current = null;
       setCaptchaToken("");
-      captcha.current?.resetCaptcha();
+      captcha.current?.reset();
     }
   };
 
@@ -108,11 +127,14 @@ export default function ContactSection() {
             <label>NAME *<input required name="name" maxLength={100} placeholder="Your name" autoComplete="name" /></label>
             <label>EMAIL *<input required type="email" name="email" maxLength={254} placeholder="you@example.com" autoComplete="email" /></label>
             <label>MESSAGE *<textarea required name="message" maxLength={5000} rows={4} placeholder="Tell me about your project…" /></label>
-            {ACCESS_KEY && <div className="captcha-wrap"><HCaptcha ref={captcha}
-              sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2" reCaptchaCompat={false} size="compact"
-              onVerify={setCaptchaToken} onExpire={() => setCaptchaToken("")}
-              onError={() => { if (request.current) return; setCaptchaToken(""); setNotice("The spam check could not load. Retry it or use the email link below. Your draft is still here."); setStatus("error"); }}
-            /></div>}
+            {ACCESS_KEY && <div className="captcha-wrap" ref={captchaRoot}>
+              {showCaptcha && <Suspense fallback={<p className="dim small">Loading spam check…</p>}>
+                <Captcha ref={captcha}
+                  onVerify={setCaptchaToken} onExpire={() => setCaptchaToken("")}
+                  onError={() => { if (request.current) return; setCaptchaToken(""); setNotice("The spam check could not load. Retry it or use the email link below. Your draft is still here."); setStatus("error"); }}
+                />
+              </Suspense>}
+            </div>}
             <button className="btn" type="submit" disabled={status === "sending"}>
               {status === "sending" ? "sending…" : status === "error" ? "try again ↵" : ACCESS_KEY ? "send message ↵" : "open email draft ↗"}
             </button>

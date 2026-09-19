@@ -8,7 +8,10 @@
     "sync": "node scripts/sync-github.mjs",
     "prebuild": "npm run sync",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "tsc --noEmit",
+    "test": "node tests/browser-smoke.cjs",
+    "audit:local": "node scripts/perf-audit.cjs"
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^2.2.0",

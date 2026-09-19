@@ -54,6 +54,8 @@ const base = 'http://127.0.0.1:5181';
       await route.fulfill({ status: responseStatus, contentType: 'application/json', body: malformed ? 'not-json' : JSON.stringify({ success: responseStatus === 200 }) });
     });
     await page.goto(base);
+    await page.getByRole('button', { name: 'what is your stack?' }).click();
+    await page.getByText('Core: TypeScript / React / Node / Postgres.').waitFor();
     for (const width of [320,390,480,768,940,1024,1440]) {
       await page.setViewportSize({ width, height: 900 });
       for(const route of ['#/', '#/about']) {
@@ -68,9 +70,9 @@ const base = 'http://127.0.0.1:5181';
     assert.equal(await page.locator('.photo-placeholder').count(), 0);
     assert.equal(await page.getByRole('button', { name: 'Scroll projects left' }).isDisabled(), true);
     await page.locator('#project-rail').evaluate(el => el.scrollLeft = el.scrollWidth);
-    await page.waitForFunction(() => document.querySelector('[aria-label="Scroll projects right"]').disabled);
+    await page.waitForFunction(() => document.querySelector('[aria-label="Next — scroll projects right"]').disabled);
     await page.locator('#project-rail').evaluate(el => el.scrollLeft = 0);
-    await page.waitForFunction(() => document.querySelector('[aria-label="Scroll projects left"]').disabled);
+    await page.waitForFunction(() => document.querySelector('[aria-label="Previous — scroll projects left"]').disabled);
     await page.locator('input[name=name]').fill('Test visitor');
     await page.locator('input[name=email]').fill('test@example.com');
     await page.locator('textarea[name=message]').fill('Keep this draft after any failure.');
@@ -104,7 +106,7 @@ const base = 'http://127.0.0.1:5181';
     await page.locator('#about').waitFor();
     assert.equal(await page.locator('.photo-card').count(), 0);
     assert.deepEqual(errors, []);
-    console.log('PASS: 14 responsive layouts, six projects, carousel edges, CAPTCHA validation/reset, four failure paths, retained drafts, success, theme, and navigation.');
+    console.log('PASS: terminal lazy-load, 14 responsive layouts, six projects, carousel edges, CAPTCHA validation/reset, four failure paths, retained drafts, success, theme, and navigation.');
   } finally {
     if(browser) await browser.close();
     server.kill();

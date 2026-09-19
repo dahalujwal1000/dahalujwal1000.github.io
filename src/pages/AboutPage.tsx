@@ -1,4 +1,4 @@
-import { about, site } from "../content";
+import { about, site } from "../site";
 
 export default function AboutPage() {
   return (

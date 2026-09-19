@@ -1,5 +1,5 @@
 import { useEffect, useState, type MouseEvent } from "react";
-import { site } from "../content";
+import { site } from "../site";
 import useHashRoute from "../hooks/useHashRoute";
 
 const SECTION_IDS = ["home", "projects", "contact"];
@@ -81,16 +81,22 @@ export default function Nav() {
       return [obs];
     });
     // at the very bottom of the page, mark the last section active
+    let frame = 0;
     const onScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 4
-      ) {
-        setActive("contact");
-      }
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        if (
+          window.innerHeight + window.scrollY >=
+          document.documentElement.scrollHeight - 4
+        ) {
+          setActive((current) => current === "contact" ? current : "contact");
+        }
+      });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
+      if (frame) window.cancelAnimationFrame(frame);
       observers.forEach((o) => o.disconnect());
       window.removeEventListener("scroll", onScroll);
     };
@@ -130,7 +136,7 @@ export default function Nav() {
           className="brand"
           href="#/"
           onClick={onBrandClick}
-          aria-label="Go to home"
+          aria-label={site.domain + " — go to home"}
         >
           <span className="dot" aria-hidden="true" />
           {brandName}

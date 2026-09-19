@@ -1,4 +1,4 @@
-import { site } from "../content";
+import { site } from "../site";
 
 export default function Footer() {
   return (

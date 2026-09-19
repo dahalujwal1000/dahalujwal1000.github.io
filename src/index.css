@@ -3,6 +3,17 @@
    Palette: GitHub-dark syntax colors, JetBrains Mono
    ============================================================ */
 
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: dark;
   --bg: #0d1117;
@@ -217,22 +228,33 @@ h3 {
 }
 
 .dot {
+  position: relative;
   display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--green);
   margin-right: 8px;
-  animation: pulse 2.2s ease-in-out infinite;
+}
+
+.dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: pulse 2.2s ease-out infinite;
 }
 
 @keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 50%, transparent);
+  from {
+    opacity: 0.5;
+    transform: scale(1);
   }
-  60% {
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--green) 0%, transparent);
+  60%,
+  to {
+    opacity: 0;
+    transform: scale(2.5);
   }
 }
 
@@ -414,12 +436,6 @@ h3 {
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
-.btn:hover {
-  background: var(--green-dim);
-  color: var(--btn-fg);
-  transform: translateY(-1px);
-}
-
 .btn:active {
   transform: scale(0.97);
 }
@@ -430,10 +446,18 @@ h3 {
   border-color: var(--border);
 }
 
-.btn.ghost:hover {
-  border-color: var(--fg-dim);
-  color: var(--fg);
-  background: var(--bg-raise);
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    background: var(--green-dim);
+    color: var(--btn-fg);
+    transform: translateY(-1px);
+  }
+
+  .btn.ghost:hover {
+    border-color: var(--fg-dim);
+    color: var(--fg);
+    background: var(--bg-raise);
+  }
 }
 
 /* ---------- terminal widget (~/ask-me.sh) ---------- */
@@ -753,6 +777,8 @@ h3 {
 .plink {
   color: var(--fg-dim);
   margin-left: 8px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .plink:hover {
@@ -1082,7 +1108,7 @@ h3 {
   }
 
   .caret,
-  .dot {
+  .dot::after {
     animation: none;
   }
 
@@ -1098,6 +1124,12 @@ h3 {
 
   html {
     scroll-behavior: auto;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .bg-dots-torch {
+    display: none;
   }
 }
 

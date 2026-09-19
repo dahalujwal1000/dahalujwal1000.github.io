@@ -1,13 +1,17 @@
+import { lazy, Suspense } from "react";
 import Hero from "../components/Hero";
 import ProjectsSection from "../components/ProjectsSection";
-import ContactSection from "../components/ContactSection";
+
+const ContactSection = lazy(() => import("../components/ContactSection"));
 
 export default function HomePage() {
   return (
     <>
       <Hero />
       <ProjectsSection />
-      <ContactSection />
+      <Suspense fallback={null}>
+        <ContactSection />
+      </Suspense>
     </>
   );
 }

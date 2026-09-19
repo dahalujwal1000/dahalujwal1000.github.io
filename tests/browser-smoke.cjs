@@ -61,6 +61,7 @@ const base = 'http://127.0.0.1:5181';
       for(const route of ['#/', '#/about']) {
         await page.goto(base+'/'+route);
         await page.locator(route === '#/' ? '#home' : '#about').waitFor();
+        if (route === '#/about') await page.locator('#about h1.is-in').waitFor();
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, 'Page overflow '+width+route);
       }
     }
@@ -73,6 +74,8 @@ const base = 'http://127.0.0.1:5181';
     await page.waitForFunction(() => document.querySelector('[aria-label="Next — scroll projects right"]').disabled);
     await page.locator('#project-rail').evaluate(el => el.scrollLeft = 0);
     await page.waitForFunction(() => document.querySelector('[aria-label="Previous — scroll projects left"]').disabled);
+    await page.locator('#contact').scrollIntoViewIfNeeded();
+    await page.locator('#contact .cform.is-in').waitFor();
     await page.locator('input[name=name]').fill('Test visitor');
     await page.locator('input[name=email]').fill('test@example.com');
     await page.locator('textarea[name=message]').fill('Keep this draft after any failure.');

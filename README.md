@@ -2,6 +2,8 @@
 
 React + TypeScript portfolio with a terminal-style interface, six curated projects, a local project Q&A widget, and a Web3Forms contact form.
 
+**Live: https://ujwal-dahal.com.np/**
+
 ## Development
 
 Use Node 20.19+ or 22.12+ (Node 24 works).
@@ -13,7 +15,7 @@ Use Node 20.19+ or 22.12+ (Node 24 works).
     npm run preview
     npm audit
 
-Build refreshes public GitHub metadata, checks TypeScript, and writes static files to dist/. A failed metadata fetch preserves the existing snapshot. Build does not publish anything. Deployment and custom-domain changes are on hold.
+Build refreshes public GitHub metadata, checks TypeScript, and writes static files to dist/. A failed metadata fetch preserves the existing snapshot. Build does not publish anything; a push to main triggers the GitHub Pages deploy workflow, which serves the site at https://ujwal-dahal.com.np/.
 
 ## Content
 
@@ -45,7 +47,7 @@ References:
     src/index.css               Theme, layout, responsive styles
     scripts/sync-github.mjs      Public repository metadata fetch
 
-Dependabot configuration is included for weekly dependency updates once pushed. No deployment workflow is enabled by these changes.
+Dependabot configuration is included for weekly dependency updates. A push to main runs the "Deploy Portfolio" workflow (.github/workflows/deploy.yml), which builds and publishes the site to GitHub Pages on https://ujwal-dahal.com.np/.
 
 ## Browser regression checks
 

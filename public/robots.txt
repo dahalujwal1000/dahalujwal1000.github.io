@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://ujwal-dahal.com.np/sitemap.xml
